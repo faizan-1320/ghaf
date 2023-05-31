@@ -4,6 +4,13 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from datetime import timedelta
 import mysql.connector
+from .admin import admin_bp
+from .authentication import authentication_bp
+from .fishmarket import fishmarket_bp
+from .product import product_bp
+from .store import store_bp
+from .supermarket import supermarket_bp
+from .user import user_bp
 
 app=Flask(__name__)
 
@@ -43,3 +50,11 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
+
+app.register_blueprint(admin_bp)
+app.register_blueprint(authentication_bp)
+app.register_blueprint(fishmarket_bp)
+app.register_blueprint(product_bp)
+app.register_blueprint(store_bp)
+app.register_blueprint(supermarket_bp)
+app.register_blueprint(user_bp)
