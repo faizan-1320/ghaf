@@ -11,6 +11,8 @@ from .product import product_bp
 from .store import store_bp
 from .supermarket import supermarket_bp
 from .user import user_bp
+from .advertisement import advertisement_bp
+from .order import order_bp
 
 app=Flask(__name__)
 
@@ -58,3 +60,5 @@ app.register_blueprint(product_bp)
 app.register_blueprint(store_bp)
 app.register_blueprint(supermarket_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(advertisement_bp)
+app.register_blueprint(order_bp)
