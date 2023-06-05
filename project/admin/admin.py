@@ -224,3 +224,69 @@ def announcement():
         
     except Exception as e:
         return jsonify({"Error": str(e) }),400
+    
+@admin_bp.route('/add_product', methods=['POST', 'GET'])
+def add_product():
+    cursor = g.db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tbl_store")
+    store = cursor.fetchall()
+    print(store)
+
+    cursor = g.db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tbl_service_category")
+    service = cursor.fetchall()
+    print(service)
+    if request.method == 'POST':
+
+        data = request.form
+        store_id = data.get("store_id")
+        service_category_id = data.get("service_id")
+        p_name = data.get('p_name')
+        p_price = data.get('p_price')
+        p_quntity = data.get('p_quntity')
+        p_unit = data.get('p_unit')
+        p_charges = data.get('p_charges')
+        p_stock = data.get('p_stock')
+        p_description = data.get('p_description')
+
+        cursor = g.db.cursor()
+        cursor.execute("INSERT INTO tbl_category_product(store_id,service_category_id,product_name,price,quntity,product_unit,additional_charge,stock,description) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                       (store_id, service_category_id, p_name, p_price, p_quntity, p_unit, p_charges, p_stock, p_description,))
+        g.db.commit()
+    return render_template('product.html', s=store, s1=service)
+
+
+@admin_bp.route('/product_img', methods=['POST', 'GET'])
+def product_img():
+
+    cursor = g.db.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM  tbl_category_product")
+    p = cursor.fetchall()
+    print("--------------->", p)
+
+    if request.method == 'POST':
+
+        data = request.form
+        p_id = data.get("p_id")
+        image = data.get('p_image')
+
+        cursor = g.db.cursor()
+        cursor.execute("INSERT INTO tbl_product_image(product_id,image) VALUES(%s,%s)",
+                       (p_id, image,))
+        g.db.commit()
+    return render_template('product-image.html', pro=p,)
+
+
+@admin_bp.route('/add_service', methods=['POST', 'GET'])
+def add_service():
+
+    if request.method == 'POST':
+
+        data = request.form
+        service = data.get("service")
+
+        cursor = g.db.cursor()
+        cursor.execute("INSERT INTO tbl_service(service) VALUES(%s)",
+                       (service,))
+        g.db.commit()
+    return render_template('add-service.html')
