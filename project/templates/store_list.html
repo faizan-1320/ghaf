@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% block body %}
+<div class="pagetitle">
+  <h1>Products</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Home</a></li>
+      <li class="breadcrumb-item active">Stores</li>
+    </ol>
+  </nav>
+</div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Stores</h5>
+
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">Store Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Owner Name</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in store %}
+                  <tr>
+                    <th scope="row">{{ i.name }}</th>
+                    <td>{{ i.address }}</td>
+                    <td>{{ i.image }}</td>
+                    <td>{{ i.owner_name }}</td>
+                    <td>+{{ i.number }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+{% endblock %}

@@ -9,10 +9,8 @@ from .authentication import authentication_bp
 from .nearby_shop import nearby_bp
 from .cart import cart_bp
 from .category_product import category_product_bp
-
-
-
-
+from .admin import admin_bp
+from .promocode import promocode_bp
 
 app=Flask(__name__)
 
@@ -61,5 +59,5 @@ app.register_blueprint(nearby_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(promocode_bp)
 app.register_blueprint(category_product_bp)
-
+app.register_blueprint(admin_bp)
 
