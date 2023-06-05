@@ -11,6 +11,8 @@ from .cart import cart_bp
 from .category_product import category_product_bp
 from .admin import admin_bp
 from .promocode import promocode_bp
+from .user_favourite import user_favourite_bp
+from .user_unfavourite import user_unfavourite_bp
 
 app=Flask(__name__)
 
@@ -60,4 +62,6 @@ app.register_blueprint(cart_bp)
 app.register_blueprint(promocode_bp)
 app.register_blueprint(category_product_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(user_favourite_bp)
+app.register_blueprint(user_unfavourite_bp)
 
