@@ -58,5 +58,3 @@ app.register_blueprint(authentication_bp)
 app.register_blueprint(nearby_bp)
 app.register_blueprint(promocode_bp)
 
-
-
