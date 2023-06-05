@@ -7,6 +7,8 @@ from flask_mail import Mail
 from .advertisment import advertisement_bp
 from .authentication import authentication_bp
 from .nearby_shop import nearby_bp
+from .promocode import promocode_bp
+
 
 app=Flask(__name__)
 
@@ -52,4 +54,5 @@ jwt = JWTManager(app)
 app.register_blueprint(advertisement_bp)
 app.register_blueprint(authentication_bp)
 app.register_blueprint(nearby_bp)
+app.register_blueprint(promocode_bp)
 
