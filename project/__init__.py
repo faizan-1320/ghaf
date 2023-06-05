@@ -62,5 +62,3 @@ app.register_blueprint(cart_bp)
 app.register_blueprint(promocode_bp)
 app.register_blueprint(category_product_bp)
 
-
-
