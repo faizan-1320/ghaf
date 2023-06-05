@@ -13,6 +13,7 @@ from .promocode import promocode_bp
 
 
 
+
 app=Flask(__name__)
 
 app.secret_key='user'
@@ -60,3 +61,6 @@ app.register_blueprint(nearby_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(promocode_bp)
 app.register_blueprint(category_product_bp)
+
+
+
