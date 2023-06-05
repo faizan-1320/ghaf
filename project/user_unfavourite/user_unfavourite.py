@@ -42,3 +42,5 @@ def user_unfavourite(id):
             return jsonify({"error": "No such product found"}), 400
     else:
         return jsonify({"error": "No such user found"}), 400
+
+
