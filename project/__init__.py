@@ -3,7 +3,9 @@ import os
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import mysql.connector # pip install mysql-connector
+from flask_mail import Mail
 from .advertisment import advertisement_bp
+from .authentication import authentication_bp
 
 app=Flask(__name__)
 
@@ -35,6 +37,16 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES']=timedelta(days=1)
 app.config['JWT_BLACKLIST_ENABLED']=True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS']=['access','refresh']
 
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.environ['MAIL_USERNAME']
+app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+
+
 jwt = JWTManager(app)
 
 app.register_blueprint(advertisement_bp)
+app.register_blueprint(authentication_bp)
