@@ -6,7 +6,7 @@ import mysql.connector # pip install mysql-connector
 from flask_mail import Mail
 from .advertisment import advertisement_bp
 from .authentication import authentication_bp
-
+from .service_category import fish_market_category_bp
 app=Flask(__name__)
 
 app.secret_key='user'
@@ -50,3 +50,4 @@ jwt = JWTManager(app)
 
 app.register_blueprint(advertisement_bp)
 app.register_blueprint(authentication_bp)
+app.register_blueprint(fish_market_category_bp)
