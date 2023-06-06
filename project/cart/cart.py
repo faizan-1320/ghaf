@@ -88,15 +88,6 @@ def display_cart_product():
     else:
         falicity_charges = [0]
 
-    user_id = request.json.get('user_id')
-    falicity_id = request.json.get('falicity_id')
-    print(falicity_id)
-    cursor = g.db.cursor()
-    # dictionary=True
-
-    if falicity_id:
-        cursor.execute(f'SELECT facility_charges FROM tbl_additional_facility WHERE id = {falicity_id}')
-        falicity_charges = cursor.fetchall()
     falicity_charges_total = 0
     if falicity_id:
         for i in falicity_charges:
@@ -111,7 +102,6 @@ def display_cart_product():
                         WHERE c.user_id=%s 
                         GROUP BY product_id""",(user_id,))
     cart_data = cursor.fetchall()
-
     cursor.execute("select count(id) from tbl_cart where user_id = %s",(user_id,))
     count = cursor.fetchone()
     cursor.execute("select firstname,lastname from tbl_users where id = %s",(user_id,))
