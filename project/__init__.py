@@ -15,6 +15,7 @@ from .promocode import promocode_bp
 from .order import order_bp
 from .user_favourite import user_favourite_bp
 from .user_unfavourite import user_unfavourite_bp
+from .user import user_bp
 
 app = Flask(__name__)
 
@@ -70,3 +71,4 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(order_bp)
 app.register_blueprint(user_unfavourite_bp)
 app.register_blueprint(user_favourite_bp)
+app.register_blueprint(user_bp)
