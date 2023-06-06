@@ -41,6 +41,7 @@ def dashboard():
         return render_template('index.html',user_count=user_count,service_count=service_count,store_count=store_count,product_count=product_count,admin=g.email['firstname'] + ' ' +g.email['lastname'])
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.get('/user')
 def tables_data():
     if g.email:
@@ -50,6 +51,7 @@ def tables_data():
         return render_template('users_list.html',user_lists=users,admin=g.email['firstname'] +' '+ g.email['lastname'])
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.get('/product-list')
 def product_list():
     if g.email:
@@ -58,6 +60,7 @@ def product_list():
         product_all=cursor.fetchall()
         return render_template('product_list.html',product_all=product_all,admin=g.email['firstname'] +' '+ g.email['lastname'])
     return redirect(url_for('auth.admin_login'))
+
 
 @admin_bp.get('/admin-profile')
 def admin_profile():
@@ -73,6 +76,7 @@ def admin_profile():
     except:
         return redirect('auth.admin_login')
 
+
 @admin_bp.get('/store-list')
 def store_list():
     if g.email:
@@ -82,6 +86,7 @@ def store_list():
         return render_template('store_list.html',store=store)
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.get('/service-list')
 def service_list():
     if g.email:
@@ -90,6 +95,7 @@ def service_list():
         service=cursor.fetchall()
         return render_template('service_list.html',service=service)
     return redirect(url_for('auth.admin_login'))
+
 
 @admin_bp.route('/admin-update/<user_id>',methods=['post','get'])
 def admin_update(user_id):
@@ -161,6 +167,7 @@ def admin_update(user_id):
         #     return jsonify({"error":f"{e}"}) 
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.route('/delete-user/<user_id>')
 def del_user(user_id):
     if g.email:
@@ -185,6 +192,7 @@ def is_admin(user_id):
         if user[0] == 'admin':
             return True
         return False
+    
         
 @admin_bp.post('/announcement')
 @jwt_required()
@@ -224,3 +232,70 @@ def announcement():
         
     except Exception as e:
         return jsonify({"Error": str(e) }),400
+    
+    
+@admin_bp.route('/add_product', methods=['POST', 'GET'])
+def add_product():
+    cursor = g.db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tbl_store")
+    store = cursor.fetchall()
+    print(store)
+
+    cursor = g.db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM tbl_service_category")
+    service = cursor.fetchall()
+    print(service)
+    if request.method == 'POST':
+
+        data = request.form
+        store_id = data.get("store_id")
+        service_category_id = data.get("service_id")
+        p_name = data.get('p_name')
+        p_price = data.get('p_price')
+        p_quntity = data.get('p_quntity')
+        p_unit = data.get('p_unit')
+        p_charges = data.get('p_charges')
+        p_stock = data.get('p_stock')
+        p_description = data.get('p_description')
+
+        cursor = g.db.cursor()
+        cursor.execute("INSERT INTO tbl_category_product(store_id,service_category_id,product_name,price,quntity,product_unit,additional_charge,stock,description) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                       (store_id, service_category_id, p_name, p_price, p_quntity, p_unit, p_charges, p_stock, p_description,))
+        g.db.commit()
+    return render_template('product.html', s=store, s1=service)
+
+
+@admin_bp.route('/product_img', methods=['POST', 'GET'])
+def product_img():
+
+    cursor = g.db.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM  tbl_category_product")
+    p = cursor.fetchall()
+    print("--------------->", p)
+
+    if request.method == 'POST':
+
+        data = request.form
+        p_id = data.get("p_id")
+        image = data.get('p_image')
+
+        cursor = g.db.cursor()
+        cursor.execute("INSERT INTO tbl_product_image(product_id,image) VALUES(%s,%s)",
+                       (p_id, image,))
+        g.db.commit()
+    return render_template('product-image.html', pro=p,)
+
+
+@admin_bp.route('/add_service', methods=['POST', 'GET'])
+def add_service():
+
+    if request.method == 'POST':
+
+        data = request.form
+        service = data.get("service")
+
+        cursor = g.db.cursor()
+        cursor.execute("INSERT INTO tbl_service(service) VALUES(%s)",
+                       (service,))
+        g.db.commit()
+    return render_template('add-service.html')
