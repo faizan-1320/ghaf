@@ -67,76 +67,61 @@ def home_screen():
         cursor.execute('SELECT id,service FROM tbl_service')
         user_service = cursor.fetchall()
 
-        cursor.execute('SELECT image,tital,description FROM tbl_announcement')
+        cursor.execute('SELECT id,image,tital,description FROM tbl_announcement')
         user_announcement = cursor.fetchall()
 
+        cursor.execute(f'SELECT tu.id,tc.country,tc.country_flag FROM tbl_users tu JOIN tbl_country tc ON tu.nationality = tc.id WHERE tu.id={user_id}')
+        country_flag = cursor.fetchall()
+
         if user:
-            return jsonify({"user":time_u,
+            return jsonify({"msg":time_u,
                             "name":user,
                             "announcement":user_announcement,
-                            "Service":user_service}),200
+                            "Service":user_service,
+                            "country_flag": country_flag}),200
         
     except Exception as e:
         return jsonify({"Error": str(e) }),400
     
 
 
-
-#-------Announcement---------------------page.41----------------------------
-
-@user_bp.post('/announcement')
-@jwt_required()
-def announcement():
+@user_bp.get('/service_listing')
+def service_listing():
     try:
-        user_id=get_jwt_identity()
+        cursor=g.db.cursor(dictionary=True)
 
-        if not is_admin(user_id):
-            return jsonify({"error":"Unauthrized Access"}),401
-        
-        cursor=g.db.cursor()
+        cursor.execute('SELECT id,service FROM tbl_service')
+        user_service = cursor.fetchall()
 
-        avatar = request.files['image']
-        if not avatar: 
-            return jsonify({'Error': 'Image Required'})
-        
-        filename = secure_filename(avatar.filename)
-
-        avatar.save(os.path.join('project/media',filename))
-
-        titel = request.form.get('titel')
-
-        description = request.form.get('descipation')
-      
-        if not titel: 
-            return jsonify({'Error': 'Titel Required'})
-        
-        if not description:
-            return jsonify({'Error': 'Descipation Required'})
-
-
-        cursor.execute('INSERT INTO tbl_announcement (image,tital,description) VALUES (%s, %s, %s)',
-                        (filename,titel,description))
-        g.db.commit()
-
-        return jsonify({'Meassage' : 'Announcement Successfully'}),200
+        return jsonify(user_service),200
         
     except Exception as e:
         return jsonify({"Error": str(e) }),400
-    
-
 
 
 @user_bp.get('/announcement_list')
 @jwt_required()
 def announcement_list():
     try:
-        cursor = g.db.cursor()
-        cursor.execute('SELECT image,tital,description FROM tbl_announcement')
+        cursor = g.db.cursor(dictionary=True)
+        cursor.execute('SELECT id,image,tital,description FROM tbl_announcement')
         user = cursor.fetchall()
         return jsonify(user)
     except Exception as e:
         return jsonify({"Error": str(e) }),400
     
+    
+
+@user_bp.get('/question_list')
+def question_list():
+    try:
+        cursor = g.db.cursor(dictionary=True)
+        cursor.execute(f'SELECT id, question FROM tbl_questions')
+        user = cursor.fetchall() 
+        return jsonify(user)  
+    except Exception as e:
+        return jsonify({"Error": str(e) }),400
+
 
 
 @user_bp.post('/competition_answer/<id>')
@@ -181,7 +166,7 @@ def user_notification():
                     return jsonify({"error":"Unauthrized Access"}),401
         
         cursor = g.db.cursor(dictionary=True)
-        cursor.execute('SELECT notification_title,notification_description,created_at FROM tbl_notification')
+        cursor.execute('SELECT id,notification_title,notification_description,created_at FROM tbl_notification')
         user = cursor.fetchall()
 
         for users in user:
@@ -194,6 +179,9 @@ def user_notification():
 
 otp = randint(0000, 9999)
 u_otp = str(otp)
+
+
+
 
 @user_bp.post('/edit_profile_user')
 @jwt_required()
@@ -222,6 +210,7 @@ def edit_profile_user():
         email = request.json.get('email')
         phone_code = request.json.get('phone_code')
         phone_number = request.json.get('phone_number')
+        
 
         if prefix not in ['Mr','Mrs','Miss','Ms']:
                 return jsonify({"Message": "Prefix Must Be Mr,Mrs,Miss Or Ms"}), 400
@@ -263,7 +252,7 @@ def edit_profile_user():
         cursor.execute(f"""UPDATE tbl_users set prefix = '{prefix}', firstname = '{firstname}',
                         lastname = '{lastname}' , nationality = {nationality},
                         dob = '{dob}', gender = '{gender}', email = '{email}',
-                        phone_code = '{phone_code}', phone_number = '{phone_number}' WHERE id = {u_id}""")
+                        phone_code = '{phone_code}', phone_number = '{phone_number}' , is_verify = {0} WHERE id = {u_id}""")
         g.db.commit()
 
         cursor.execute('SELECT id FROM tbl_users WHERE is_active=1 AND is_delete=0 AND email=%s',(email,))
@@ -296,7 +285,6 @@ def edit_profile_user():
         return jsonify({"Error": str(e) }),400
 
 
-
 @user_bp.post('/user_otp')
 def user_otp():
     try:
@@ -306,6 +294,7 @@ def user_otp():
 
         cursor = g.db.cursor()
         cursor.execute('SELECT o.otp,o.user_id FROM tbl_user_otp o JOIN tbl_users tu ON o.user_id = tu.id WHERE o.otp = %s ', (u_otp,))
+
         result = cursor.fetchone()
         
         if not u_otp:
@@ -328,6 +317,7 @@ def user_otp():
                 return jsonify({'message': "otp Not match"}),400
         else:
             return jsonify({'message': "otp Not found"}),400
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -397,7 +387,91 @@ def user_favourites():
     except Exception as e:
         return jsonify({"Error": str(e) }),400
 
+@user_bp.get('/language_list')
+def language_list():
+    try:
+        cursor = g.db.cursor(dictionary=True)
+        cursor.execute('SELECT id,country_id,language FROM tbl_language')
+        user = cursor.fetchall()
+        return jsonify(user)
+    except Exception as e:
+        return jsonify({"Error": str(e) }),400
+
+@user_bp.get('/country_list')
+def country_list():
+    try:
+        cursor = g.db.cursor(dictionary=True)
+        cursor.execute('SELECT id,country,country_flag FROM tbl_country')
+        user  = cursor.fetchall()
+        return jsonify(user)
+    except Exception as e:
+        return jsonify({"Error": str(e) }),400
+    
+
+@user_bp.get('/currency_list')
+def currency_list():
+    try:
+        cursor = g.db.cursor(dictionary=True)
+        cursor.execute('SELECT id,country_id,currency FROM tbl_currency')
+        user  = cursor.fetchall()
+        return jsonify(user)
+    except Exception as e:
+        return jsonify({"Error": str(e) }),400
 
 
+@user_bp.post('/application_login_country')
+def application_login_country():
+    try:
+        data = request.json
+        country_id = data.get('country_id')
+        currency_id = data.get('currency_id')
+        language_id = data.get('language_id')
 
+        if not all([country_id, currency_id, language_id]):
+            return jsonify({'error': 'Missing required fields'}), 400
 
+        try:
+            country_id = int(country_id)
+            currency_id = int(currency_id)
+            language_id = int(language_id)
+        except ValueError:
+            return jsonify({'error': 'Invalid id Data'}), 400
+
+        cursor = g.db.cursor()
+
+        cursor.execute(f'SELECT id,country FROM tbl_country WHERE id = {country_id}')
+        country = cursor.fetchone()
+        if not country:
+            return jsonify({'error': 'Country not Found'}), 400
+
+        cursor.execute(f'SELECT id,country_id,currency FROM tbl_currency WHERE id = {currency_id}')
+        currency = cursor.fetchone()
+        if not currency:
+            return jsonify({'error': 'Currency not Found'}), 400
+
+        cursor.execute(f'SELECT id,country_id,language FROM tbl_language WHERE id = {language_id}')
+        language = cursor.fetchone()
+        if not language:
+            return jsonify({'error': 'Language not Found'}), 400
+
+        cursor.execute('INSERT INTO tbl_application_login (country_id,language_id,currency_id) VALUES (%s, %s, %s)',
+                       (country_id, language_id, currency_id))
+
+        g.db.commit()
+        return jsonify({'Message': 'Successfully'}), 200
+
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 400
+    
+@user_bp.get('/country_guest')
+def country_guest():
+    try:
+        guest_id = request.json.get('guest_id')
+        cursor = g.db.cursor(dictionary=True)
+        cursor.execute(f'SELECT tc.id as country_id,tc.country_flag,tc.country FROM tbl_application_login al JOIN tbl_country tc ON al.country_id = tc.id WHERE al.id={guest_id}')
+        user = cursor.fetchone()
+        if not user:
+            return jsonify({'error': 'Guest not Found'}), 400
+        return jsonify(user)
+    except Exception as e:
+        return jsonify({"Error": str(e)}), 400
