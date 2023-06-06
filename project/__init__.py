@@ -6,11 +6,16 @@ import mysql.connector # pip install mysql-connector
 from flask_mail import Mail
 from .advertisment import advertisement_bp
 from .authentication import authentication_bp
+from .service_category import fish_market_category_bp
 from .nearby_shop import nearby_bp
 from .cart import cart_bp
 from .category_product import category_product_bp
 from .admin import admin_bp
 from .promocode import promocode_bp
+from .order import order_bp
+from .user_favourite import user_favourite_bp
+from .user_unfavourite import user_unfavourite_bp
+from .user import user_bp
 
 app=Flask(__name__)
 
@@ -55,9 +60,13 @@ jwt = JWTManager(app)
 
 app.register_blueprint(advertisement_bp)
 app.register_blueprint(authentication_bp)
+app.register_blueprint(fish_market_category_bp)
 app.register_blueprint(nearby_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(promocode_bp)
 app.register_blueprint(category_product_bp)
 app.register_blueprint(admin_bp)
-
+app.register_blueprint(order_bp)
+app.register_blueprint(user_unfavourite_bp)
+app.register_blueprint(user_favourite_bp)
+app.register_blueprint(user_bp)
