@@ -448,7 +448,7 @@
                                     <label for="validationDefault04" class="form-label">Store Id</label>
                                     <select class="form-select" name="store_id" id="validationDefault04" required>
                                         {% for i in s %}
-                                        <option>{{i.id}}</option>
+                                        <option>{{i.name}}</option>
 
                                         {% endfor %}
                                     </select>
@@ -457,8 +457,8 @@
                                 <div class="col-12">
                                     <label for="validationDefault04" class="form-label">Service Id</label>
                                     <select class="form-select" name="service_id" id="validationDefault04" required>
-                                        {% for i in s1 %}
-                                        <option>{{i.id}}</option>
+                                        {% for i in ss %}
+                                        <option>{{i.category_name}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

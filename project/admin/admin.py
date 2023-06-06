@@ -38,16 +38,16 @@ def dashboard():
         product_count=cursor.fetchone()
         cursor.execute('SELECT COUNT(id) AS total_service FROM tbl_service WHERE is_active=1 AND is_delete=0')
         service_count=cursor.fetchone()
-        return render_template('index.html',user_count=user_count,service_count=service_count,store_count=store_count,product_count=product_count,admin=g.email['firstname'] + ' ' +g.email['lastname'])
+        return render_template('index.html',user_count=user_count,service_count=service_count,store_count=store_count,product_count=product_count)
     return redirect(url_for('auth.admin_login'))
 
 @admin_bp.get('/user')
 def tables_data():
     if g.email:
         cursor=g.db.cursor(dictionary=True)
-        cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,phone_number,gender,dob,nationality FROM tbl_users WHERE user_type!="admin" AND is_active=1 AND is_delete=0')
+        cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,mobile_number,gender,dob,nationality FROM tbl_users WHERE user_type!="admin" AND is_active=1 AND is_delete=0')
         users=cursor.fetchall()
-        return render_template('users_list.html',user_lists=users,admin=g.email['firstname'] +' '+ g.email['lastname'])
+        return render_template('users_list.html',user_lists=users)
     return redirect(url_for('auth.admin_login'))
 
 @admin_bp.get('/product-list')
@@ -56,7 +56,7 @@ def product_list():
         cursor=g.db.cursor(dictionary=True)
         cursor.execute('SELECT product_name,price,quntity,product_unit,additional_charge,stock,description FROM tbl_category_product WHERE is_active=1 AND is_delete=0')
         product_all=cursor.fetchall()
-        return render_template('product_list.html',product_all=product_all,admin=g.email['firstname'] +' '+ g.email['lastname'])
+        return render_template('product_list.html',product_all=product_all)
     return redirect(url_for('auth.admin_login'))
 
 @admin_bp.get('/admin-profile')
@@ -65,9 +65,9 @@ def admin_profile():
         if g.email:
             try:
                 cursor=g.db.cursor(dictionary=True)
-                cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,phone_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin" AND is_active=1 AND is_delete=0')
+                cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,mobile_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin" AND is_active=1 AND is_delete=0')
                 admin_pro=cursor.fetchone()
-                return render_template('admin-profile.html',admin_pro=admin_pro,admin=g.email['firstname'] + ' ' + g.email['lastname'],email=g.email['email'],phone=g.email['phone_code']+''+g.email['phone_number'],prefix=g.email['prefix'])
+                return render_template('admin-profile.html',a=admin_pro)
             except:
                 return redirect('auth.admin_login')
     except:
@@ -88,7 +88,7 @@ def service_list():
         cursor=g.db.cursor(dictionary=True)
         cursor.execute('SELECT service FROM tbl_service WHERE is_active=1 AND is_delete=0')
         service=cursor.fetchall()
-        return render_template('service_list.html',service=service)
+        return render_template('service_list.html',s1=service)
     return redirect(url_for('auth.admin_login'))
 
 @admin_bp.route('/admin-update/<user_id>',methods=['post','get'])
@@ -96,7 +96,7 @@ def admin_update(user_id):
     # try:
     if g.email:
         cursor=g.db.cursor(dictionary=True)
-        cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,phone_number,gender,dob,nationality FROM tbl_users WHERE user_type!="admin" AND id=%s',(user_id,))
+        cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,mobile_number,gender,dob,nationality FROM tbl_users WHERE user_type!="admin" AND id=%s',(user_id,))
         userupdate=cursor.fetchone()
         print(userupdate)
         if request.method=='POST':
@@ -128,7 +128,7 @@ def admin_update(user_id):
                 value.append(data['phonecode'])
 
             if "phonenumber" in data:
-                change.append("phone_number=%s")
+                change.append("mobile_number=%s")
                 value.append(data['phonenumber'])
 
             if "gender" in data:
@@ -253,7 +253,7 @@ def add_product():
         cursor.execute("INSERT INTO tbl_category_product(store_id,service_category_id,product_name,price,quntity,product_unit,additional_charge,stock,description) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                        (store_id, service_category_id, p_name, p_price, p_quntity, p_unit, p_charges, p_stock, p_description,))
         g.db.commit()
-    return render_template('product.html', s=store, s1=service)
+    return render_template('product.html', s=store, ss=service)
 
 
 @admin_bp.route('/product_img', methods=['POST', 'GET'])

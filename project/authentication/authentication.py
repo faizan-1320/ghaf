@@ -131,7 +131,7 @@ def register():
         password_hash = generate_password_hash(password, method='sha256', salt_length=8)
         if not users:
             cursor=g.db.cursor(buffered=True)
-            cursor.execute(f"INSERT INTO tbl_users(user_type,prefix,firstname,lastname,nationality,gender,dob,email,password,phone_code,phone_number) VALUES('{user_type}','{prefix}','{firstname}','{lastname}','{nationality}','{gender}','{dob}','{email}', '{password_hash}','{phone_code}','{phone_number}' )")
+            cursor.execute(f"INSERT INTO tbl_users(user_type,prefix,firstname,lastname,nationality,gender,dob,email,password,phone_code,mobile_number) VALUES('{user_type}','{prefix}','{firstname}','{lastname}','{nationality}','{gender}','{dob}','{email}', '{password_hash}','{phone_code}','{mobile_number}' )")
             g.db.commit()
             cursor=g.db.cursor()
             cursor.execute(f"SELECT * from tbl_users where email='{email}' ORDER BY email DESC")
@@ -316,8 +316,8 @@ def admin_login():
         # try:
             email = request.form.get('email')
             password = request.form.get('password')
-            cursor=g.db.cursor(dictionary=True)
-            cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,phone_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin"')
+            cursor=g.db.cursor(buffered=True)
+            cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,mobile_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin"')
             admin=cursor.fetchone()
             session['email'] = admin
             # print(password,phone) 
