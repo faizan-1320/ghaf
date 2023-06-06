@@ -1,23 +1,23 @@
+import json
+import pytz
+from datetime import datetime, timedelta
 import datetime
-from flask import Blueprint, app,request,jsonify,g
-from werkzeug.security import generate_password_hash,check_password_hash
+from flask import Blueprint, app, request, jsonify, g
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from flask import Flask
 from datetime import timedelta
 from werkzeug.utils import secure_filename
-from flask_mysql_connector import MySQL 
+from flask_mysql_connector import MySQL
 
 import random
 
-app=Flask(__name__)
+app = Flask(__name__)
 
 
-fish_market_category_bp= Blueprint('fish_market_category',__name__)
-blacklist=set()
+fish_market_category_bp = Blueprint('fish_market_category', __name__)
+blacklist = set()
 
-from datetime import datetime, timedelta
-import pytz
-import json
 
 @fish_market_category_bp.post("/market_category/<int:category>")
 def market_category(category):
@@ -61,6 +61,3 @@ def market_category(category):
         return jsonify({'Success': USER}), 200
     else:
         return jsonify({'Error': "enter valid details"}), 400
-
-    
-

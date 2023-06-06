@@ -1,8 +1,8 @@
-from flask import Flask,jsonify,g
+from flask import Flask, jsonify, g
 import os
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
-import mysql.connector # pip install mysql-connector
+import mysql.connector  # pip install mysql-connector
 from flask_mail import Mail
 from .advertisment import advertisement_bp
 from .authentication import authentication_bp
@@ -16,21 +16,23 @@ from .order import order_bp
 from .user_favourite import user_favourite_bp
 from .user_unfavourite import user_unfavourite_bp
 
-app=Flask(__name__)
+app = Flask(__name__)
 
-app.secret_key='user'
+app.secret_key = 'user'
+
 
 @app.before_request
 def before_request():
     try:
-        g.db=mysql.connector.connect(
+        g.db = mysql.connector.connect(
             user=os.environ['MYSQL_USER'],
             password=os.environ['MYSQL_PASSWORD'],
             host=os.environ['MYSQL_HOST'],
             database=os.environ['MYSQL_DB']
         )
     except:
-        return jsonify({"Message":"Start Server"})
+        return jsonify({"Message": "Start Server"})
+
 
 @app.after_request
 def after_request(response):
@@ -38,15 +40,15 @@ def after_request(response):
         g.db.close()
         return response
     except:
-        return jsonify({"Message":"Start Server"})
+        return jsonify({"Message": "Start Server"})
 
 
-app.config['JWT_SECRET_KEY']=os.environ['JWT_SECRET_KEY']
-app.config['JWT_ACCESS_TOKEN_EXPIRES']=timedelta(days=1)
-app.config['JWT_BLACKLIST_ENABLED']=True
-app.config['JWT_BLACKLIST_TOKEN_CHECKS']=['access','refresh']
+app.config['JWT_SECRET_KEY'] = os.environ['JWT_SECRET_KEY']
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
-app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = os.environ['MAIL_USERNAME']
 app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']

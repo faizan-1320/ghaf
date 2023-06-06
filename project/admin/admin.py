@@ -41,6 +41,7 @@ def dashboard():
         return render_template('index.html',user_count=user_count,service_count=service_count,store_count=store_count,product_count=product_count,admin=g.email['firstname'] + ' ' +g.email['lastname'])
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.get('/user')
 def tables_data():
     if g.email:
@@ -50,6 +51,7 @@ def tables_data():
         return render_template('users_list.html',user_lists=users,admin=g.email['firstname'] +' '+ g.email['lastname'])
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.get('/product-list')
 def product_list():
     if g.email:
@@ -58,6 +60,7 @@ def product_list():
         product_all=cursor.fetchall()
         return render_template('product_list.html',product_all=product_all,admin=g.email['firstname'] +' '+ g.email['lastname'])
     return redirect(url_for('auth.admin_login'))
+
 
 @admin_bp.get('/admin-profile')
 def admin_profile():
@@ -73,6 +76,7 @@ def admin_profile():
     except:
         return redirect('auth.admin_login')
 
+
 @admin_bp.get('/store-list')
 def store_list():
     if g.email:
@@ -82,6 +86,7 @@ def store_list():
         return render_template('store_list.html',store=store)
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.get('/service-list')
 def service_list():
     if g.email:
@@ -90,6 +95,7 @@ def service_list():
         service=cursor.fetchall()
         return render_template('service_list.html',service=service)
     return redirect(url_for('auth.admin_login'))
+
 
 @admin_bp.route('/admin-update/<user_id>',methods=['post','get'])
 def admin_update(user_id):
@@ -161,6 +167,7 @@ def admin_update(user_id):
         #     return jsonify({"error":f"{e}"}) 
     return redirect(url_for('auth.admin_login'))
 
+
 @admin_bp.route('/delete-user/<user_id>')
 def del_user(user_id):
     if g.email:
@@ -185,6 +192,7 @@ def is_admin(user_id):
         if user[0] == 'admin':
             return True
         return False
+    
         
 @admin_bp.post('/announcement')
 @jwt_required()
@@ -224,6 +232,7 @@ def announcement():
         
     except Exception as e:
         return jsonify({"Error": str(e) }),400
+    
     
 @admin_bp.route('/add_product', methods=['POST', 'GET'])
 def add_product():
