@@ -130,14 +130,12 @@ def register():
         password_hash = generate_password_hash(
             password, method='sha256', salt_length=8)
         if not users:
-<<<<<<< HEAD
-            cursor=g.db.cursor(buffered=True)
-            cursor.execute(f"INSERT INTO tbl_users(user_type,prefix,firstname,lastname,nationality,gender,dob,email,password,phone_code,mobile_number) VALUES('{user_type}','{prefix}','{firstname}','{lastname}','{nationality}','{gender}','{dob}','{email}', '{password_hash}','{phone_code}','{mobile_number}' )")
-=======
+            cursor = g.db.cursor(buffered=True)
+            cursor.execute(
+                f"INSERT INTO tbl_users(user_type,prefix,firstname,lastname,nationality,gender,dob,email,password,phone_code,mobile_number) VALUES('{user_type}','{prefix}','{firstname}','{lastname}','{nationality}','{gender}','{dob}','{email}', '{password_hash}','{phone_code}','{phone_number}' )")
             cursor = g.db.cursor(buffered=True)
             cursor.execute(
                 f"INSERT INTO tbl_users(user_type,prefix,firstname,lastname,nationality,gender,dob,email,password,phone_code,phone_number) VALUES('{user_type}','{prefix}','{firstname}','{lastname}','{nationality}','{gender}','{dob}','{email}', '{password_hash}','{phone_code}','{phone_number}' )")
->>>>>>> 7846d4877bb2cb14b70ca928d2739fff262141d0
             g.db.commit()
             cursor = g.db.cursor()
             cursor.execute(
@@ -170,7 +168,7 @@ def verifyotp(user_id):
         print(res)
         from datetime import datetime, timedelta
         current_datetime = datetime.now()
-        timestamp = current_datetime.timestamp()        
+        timestamp = current_datetime.timestamp()
         print(timestamp)
         rounded_timestamp = round(timestamp)
         print(rounded_timestamp)
@@ -229,7 +227,6 @@ def login():
                 return jsonify({'error': 'Wrong credentital'}), 401
         else:
             return jsonify({'error': 'Wrong credentital'}), 401
-        return jsonify({'message': 'login done'}), 401
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
@@ -329,56 +326,11 @@ def reset_pwd(hash_id, user_id):
 def admin_login():
     if request.method == 'POST':
         # try:
-<<<<<<< HEAD
-            email = request.form.get('email')
-            password = request.form.get('password')
-            cursor=g.db.cursor(buffered=True)
-            cursor.execute('SELECT id,prefix,firstname,lastname,email,phone_code,mobile_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin"')
-            admin=cursor.fetchone()
-            session['email'] = admin
-            # print(password,phone) 
-            if not email:
-                empty_message="Please Enter Email"
-                return render_template('login.html', error_phone=empty_message)
-                # return jsonify({"massage":"phone number or email missing required for login"})
-            
-            if not password:
-                empty_password="Please Enter Password"
-                return render_template('login.html', error_password=empty_password)
-                # return jsonify({"massage":"password missing password required"})
-            
-            cursor=g.db.cursor()
-            cursor.execute('select * from tbl_users where  email = %s and is_active = 1 and is_delete = 0 AND user_type="admin"',(email,))
-            admin = cursor.fetchone()
-            
-            if admin:
-                # print("i am adkmadsf=============>",admin)
-                check_pass = check_password_hash(admin[9],password)
-                if check_pass:
-                    if admin[14] == True:
-                        
-                        return redirect(url_for('admin.dashboard'))
-                    else:
-                        return jsonify({
-                            "massage":"Admin is not verified",
-                            "email":admin[4]
-                        })
-                error_data="wrong credential"
-                return render_template('login.html',error_data=error_data)
-                # else:
-                #     return({
-                #         "error":"wrong credential"
-                #     })
-            else:
-                error_admin = "Only Admin Can Login"
-                return render_template('login.html', error=error_admin)
-                # return jsonify({"Mesage":"Only Admin Can Login"})
-=======
         email = request.form.get('email')
         password = request.form.get('password')
-        cursor = g.db.cursor(dictionary=True)
+        cursor = g.db.cursor(buffered=True)
         cursor.execute(
-            'SELECT id,prefix,firstname,lastname,email,phone_code,phone_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin"')
+            'SELECT id,prefix,firstname,lastname,email,phone_code,mobile_number,gender,dob,nationality FROM tbl_users WHERE user_type="admin"')
         admin = cursor.fetchone()
         session['email'] = admin
         # print(password,phone)
@@ -398,7 +350,6 @@ def admin_login():
         admin = cursor.fetchone()
 
         if admin:
-            # print("i am adkmadsf=============>",admin)
             check_pass = check_password_hash(admin[9], password)
             if check_pass:
                 if admin[14] == True:
@@ -418,14 +369,6 @@ def admin_login():
         else:
             error_admin = "Only Admin Can Login"
             return render_template('login.html', error=error_admin)
-            # return jsonify({"Mesage":"Only Admin Can Login"})
->>>>>>> 7846d4877bb2cb14b70ca928d2739fff262141d0
-        # return render_template('login.html')
-
-        # except:
-        # error = "All fields are required"
-        # return render_template('login.html', error=error)
-        # return jsonify({"Message":"All fields are required"})
     else:
         return render_template('login.html')
 
