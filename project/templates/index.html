@@ -226,7 +226,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="/admin-profile">
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('admin.admin_profile') }}">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -282,12 +282,12 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="/admin-profile">
+       <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('admin.admin_profile') }}">
           <i class="bi bi-person"></i>
           <span>Profile</span>
         </a>
-      </li><!-- End Profile Page Nav -->
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url_for('admin.tables_data') }}">
@@ -318,16 +318,16 @@
       </li><!-- End Services Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#">
+        <a class="nav-link collapsed" href="{{ url_for('admin.add_product') }}">
           <i class="bi bi-card-list"></i>
-          <span>Register</span>
+          <span>Add Product</span>
         </a>
       </li><!-- End Register Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('auth.logout') }}">
+        <a class="nav-link collapsed" href="{{ url_for('admin.product_img') }}">
           <i class="bi bi-box-arrow-in-right"></i>
-          <span>Sign Out</span>
+          <span>Add Product Image</span>
         </a>
       </li><!-- End Sign Out Page Nav -->
 
